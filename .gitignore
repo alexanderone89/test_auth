@@ -1,0 +1,5 @@
+.windvenv
+.idea
+.idea/*
+__pycache__/
+*.local*

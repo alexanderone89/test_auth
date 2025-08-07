@@ -1,0 +1,75 @@
+[
+
+  {
+    "id": "5",
+    "type": "house",
+    "name": "Телевизор Android TV DM-LED65",
+    "description": "Телевизор Android TV DM-LED65",
+    "brand": {
+      "name": "DIGMA",
+      "country": "Russia",
+      "address": "г. Санкт-Петербург"
+    },
+    "availability": "136",
+    "price": "40970.00",
+    "priceCurrency": "rub"
+  },
+  {
+    "id": "1",
+      "type": "kitchen",
+      "name": "Холодильник Ariston",
+      "description": "Надежный, красивый холодильник от мирового бренда",
+      "brand": {
+        "name": "Hotpoint",
+        "country": "Russia",
+        "address": "г. Москва, ул. Пушкина, д. 10"
+      },
+      "availability": "14",
+      "price": "50000.00",
+      "priceCurrency": "rub"
+  },
+  {
+    "id": "2",
+    "type": "garden",
+    "name": "Садовые качели Бригантина",
+    "description": "Качели садовые 4х-местные c антимоскитной сеткой. Размеры качелей в собранном виде: длина 246 см, ширина 150см, высота 190 см. Длина дивана 200 см. 4 посадочных места.",
+    "brand": {
+      "name": "REDFORD",
+      "country": "Russia",
+      "address": "г. Казань, ул. Маяковского, д. 25"
+    },
+    "availability": "43",
+    "price": "41500.00",
+    "priceCurrency": "rub"
+  },
+  {
+    "id": "3",
+    "type": "office",
+    "name": "Кресло офисное",
+    "description": "Дизайнерское компьютерное кресло на колесах для работы, учебы и отдыха Master бренда АМИ сочетает в себе превосходный дизайн и высокое качество исполнения.",
+    "brand": {
+      "name": "AMI",
+      "country": "Russia",
+      "address": "г. Волгоград, ул. Ленина, д. 30"
+    },
+    "availability": "124",
+    "price": "9493.00",
+    "priceCurrency": "rub"
+  },
+
+  {
+    "id": "4",
+    "type": "kitchen",
+    "name": "Стол кухонный",
+    "description": "Стол обеденный раздвижной круглый Ricoo станет главным акцентом вашего интерьера, лакированная столешница покрытая эмалью прекрасно впишется в кухню или же в гостиную или спальню. ",
+    "brand": {
+      "name": "RICOO",
+      "country": "Russia",
+      "address": "г. Томск, ул. Ленина, д. 60"
+    },
+    "availability": "32",
+    "price": "12690.00",
+    "priceCurrency": "rub"
+  }
+
+]
