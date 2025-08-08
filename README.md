@@ -1,15 +1,5 @@
-<h1 align="center">Здравствуйте, меня зовут <a href="https://github.com/alexanderone89" target="_blank">Александр</a> 
-<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/></h1>
 
-<h3 align="center">Тестовое задание</h3>
-
-
-<h1 align="center">VueSolitaire</h1>
-<h2 align="center">
-
-[![Mentioned in Awesome Vue.js](https://awesome.re/mentioned-badge.svg)](https://github.com/vuejs/awesome-vue)
-
-</h2>
+<h1 align="center">ТЕСТОВОЕ ЗАДАНИЕ</h1>
 
 
 ## Описание
