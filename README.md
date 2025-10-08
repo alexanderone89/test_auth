@@ -55,6 +55,8 @@ git clone https://github.com/alexanderone89/test_auth.git
 ```
 cd test_auth
 ```
+Переименовать файл example.env в .env
+
 ### Запустить **docker compose** ###
 
 ```
