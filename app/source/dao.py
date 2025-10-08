@@ -74,5 +74,3 @@ class ProductsDao:
                 del cls.products[index]
                 break
         return search_id
-
-

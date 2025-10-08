@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 
 from passlib.context import CryptContext
 from jose import jwt
@@ -7,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pydantic import EmailStr
 
 from app.config import get_auth_data, settings
-from app.exceptions import ProfileNotActiveException
+from app.exceptions import ProfileNotActiveException, UserNotFoundException
 from app.users.dao import UsersDAO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -24,16 +23,21 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(int(settings.TOKEN_EXPIRE_DAYS))#timedelta(seconds=30)#
-    to_encode.update({"exp": expire})
+    to_encode.update(
+        {
+            "exp": expire,
+        }
+    )
     auth_data = get_auth_data()
     encode_jwt = jwt.encode(to_encode, auth_data['secret_key'], algorithm=auth_data['algorithm'])
     return encode_jwt
 
 async def authenticate_user(email: EmailStr, password: str):
     user = await UsersDAO.find_one_or_none(filter_by={'email':email})
+    if not user:
+        raise UserNotFoundException
     if not user.is_active:
         raise ProfileNotActiveException
-
     if not user or verify_password(plain_password=password, hashed_password=user.password) is False:
         return None
     return user

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 from starlette.responses import Response
 from app.exceptions import (
     UserAlreadyExistsException,
@@ -11,7 +10,7 @@ from app.users.auth import (
     authenticate_user,
     create_access_token
 )
-from app.users.dao import UsersDAO
+from app.users.dao import UsersDAO, RoleDao
 from app.users.models import User
 from app.users.schemas import (
     SUserRegister,
@@ -20,6 +19,18 @@ from app.users.schemas import (
     SUpdateUser,
     SURole
 )
+
+
+@dataclass
+class RoleService:
+    dao: RoleDao
+
+    async def update_role(self,role_id:int, role: SURole):
+        check = await self.dao.update(filter_by={'id': role_id}, roles=role.role, permissions=role.permissions)
+        if check:
+            return {"message": "Роль пользователя успешно обновлена!"}
+        else:
+            return {"message": "Ошибка при обновлении роли пользователя!"}
 
 
 @dataclass
@@ -58,19 +69,20 @@ class UserService:
         check = await self.dao.full_delete(user_id)
         return {'message': 'Пользователь успешно удален'}
 
-    async def update_role(self, role: SURole):
-
-        check = await self.dao.update(filter_by={'id': role.id}, role=role.role)
-        if check:
-            return {"message": "Роль пользователя успешно обновлена!"}
-        else:
-            return {"message": "Ошибка при обновлении роли пользователя!"}
 
     async def login(self, response: Response, user_data: SUserAuth)->UserLoginSchema:
         check = await authenticate_user(email=user_data.email, password=user_data.password)
         if check is None:
             raise IncorrectEmailOrPasswordException
-        access_token = create_access_token({"sub": str(check.id)})
+
+        user_role = await RoleDao.find_one_or_none_by_id(check.role_id)
+        access_token = create_access_token(
+            {
+                "sub": str(check.id),
+                "role": user_role.roles,
+                "permissions": user_role.permissions,
+            }
+        )
         response.set_cookie(
             key="users_access_token",
             value=access_token,

@@ -3,24 +3,22 @@ from typing import Annotated
 from fastapi import APIRouter,status, Depends, Query
 from starlette.responses import Response
 
-from app.users.dependencies import (get_current_user,
-                                    get_current_admin_user,
-                                    get_user_service)
+from app.users.dependencies import (get_user_service,
+                                    PermissionsCheck, get_roles_service)
 from app.users.models import User
 from app.users.schemas import (SUserRegister,
                                SUserAuth,
-                               Role,
                                SUpdateUser,
                                UserLoginSchema,
                                SURole)
-from app.users.service import UserService
+from app.users.service import UserService, RoleService
 
 router = APIRouter(prefix='/auth', tags=['Users & Auth'])
 @router.get("/me/",
             status_code=status.HTTP_200_OK
 )
 async def get_me(
-        user_data: Annotated[User, Depends(get_current_user)],
+        user_data: Annotated[User, Depends(PermissionsCheck("admin,manager,user","admin:read,user:read,manager:read"))],
         user_service: Annotated[UserService, Depends(get_user_service)],
 ):
     return await user_service.get_user(user_data)
@@ -31,7 +29,7 @@ async def get_me(
     response_model=None
 )
 async def get_all_users(
-        user: Annotated[User, Depends(get_current_admin_user)],
+        user: Annotated[User, Depends(PermissionsCheck("manager,admin", "admin:read,manager:read"))],
         user_service: Annotated[UserService,Depends(get_user_service)]
 ):
     return await user_service.get_users()
@@ -40,10 +38,11 @@ async def get_all_users(
             status_code=status.HTTP_202_ACCEPTED,)
 async def set_role(
         user_service: Annotated[UserService,Depends(get_user_service)],
-        user_data: User = Depends(get_current_admin_user),
+        role_service: Annotated[RoleService,Depends(get_roles_service)],
+        user_data: Annotated[User, Depends(PermissionsCheck("admin", "admin:write"))],
         role: SURole = Depends()
 ):
-    return await user_service.update_role(role)
+    return await role_service.update_role(role_id=user_data.role_id,role=role)
 
 @router.put("/update-profile/",
             status_code=status.HTTP_202_ACCEPTED,
@@ -52,7 +51,10 @@ async def set_role(
 async def update_profile(
         user_service: Annotated[UserService,Depends(get_user_service)],
         user_data: SUpdateUser,
-        user: Annotated[User, Depends(get_current_user)],
+        user: Annotated[User, Depends(PermissionsCheck(
+            "admin,manager,user",
+            "admin:write,manager:write,user:write")
+        )],
 ):
     return await user_service.update_user(body=user_data, user_id=user.id)
 
@@ -93,7 +95,7 @@ async def register_user(
 async def remove_user(
         user_service: Annotated[UserService,Depends(get_user_service)],
         response: Response,
-        user_data: User = Depends(get_current_user)
+        user_data: Annotated[User, Depends(PermissionsCheck("user,manager", "user:write,manager:write"))]
 ):
     return await user_service.delete_user(user=user_data, response=response)
 
@@ -101,7 +103,7 @@ async def remove_user(
                status_code=status.HTTP_200_OK)
 async def full_remove_user(
         user_service: Annotated[UserService,Depends(get_user_service)],
-        user_data: Annotated[User, Depends(get_current_admin_user)],
+        user_data: Annotated[User, Depends(PermissionsCheck("admin", "admin:full-delete"))],
         user_id: int
 ):
     return await user_service.full_delete_user(user_id=user_id)

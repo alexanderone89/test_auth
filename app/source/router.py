@@ -1,8 +1,6 @@
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi.params import Depends
-from starlette import status
 
 from app.source import schemas
 from app.source.service import ProductsService, get_product_service
@@ -17,7 +15,7 @@ router = APIRouter(prefix='/products', tags=['Products'])
     response_model=list[schemas.SProduct],)
 async def get_all_products(
         product_service: Annotated[ProductsService, Depends(get_product_service)],
-        user: Annotated[User, Depends(get_current_user)],
+        user: Annotated[User, Depends(PermissionsCheck("admin,manager,user", "admin:read,manager:read,user:read"))]
 ):
     return await product_service.get_products()
 
@@ -28,10 +26,7 @@ async def update_product(
         product_id:int,
         product: schemas.SProduct,
         product_service: Annotated[ProductsService, Depends(get_product_service)],
-        user: Annotated[
-            User,
-            Depends(get_current_manager_and_admin_user)
-        ],
+        user: Annotated[User, Depends(PermissionsCheck("admin,manager", "admin:write,manager:write"))]
 ):
     return await product_service.update_product(product_id, product)
 
@@ -42,9 +37,6 @@ async def update_product(
 async def delete_product(
         product_id: int,
         product_service: Annotated[ProductsService, Depends(get_product_service)],
-        user: Annotated[
-            User,
-            Depends(get_current_manager_and_admin_user),
-        ],
+        user: Annotated[User, Depends(PermissionsCheck("admin,manager", "manager:delete,admin:full-delete"))]
 ):
     return await product_service.delete_product(product_id)

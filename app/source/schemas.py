@@ -14,6 +14,3 @@ class SProduct(BaseModel):
     availability: str = Field(..., description="Наличие штук")
     price: str = Field(..., description="Цена")
     priceCurrency: str = Field(..., description="Валюта")
-
-
-

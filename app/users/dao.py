@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 
-from sqlalchemy import select, delete, update
-from sqlalchemy.exc import SQLAlchemyError
-
+from sqlalchemy import select, delete
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
 from app.exceptions import UserNotFoundException
-from app.users.models import User
+from app.users.models import User, Roles
 
+
+@dataclass
+class RoleDao(BaseDAO):
+    model = Roles
 
 @dataclass
 class UsersDAO(BaseDAO):
